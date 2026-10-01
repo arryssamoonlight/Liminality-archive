@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Liminality Archive - Escape Run</title>
+
+<style>
+
+body {
+    margin: 0;
+    background: #c8c0aa;
+    color: white;
+    font-family: monospace;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 5px;
+}
+
+#game {
+    display: block;
+    margin: 20px auto 10px auto;
+
+    border: 4px solid white;
+
+    background: #c8c0aa;
+}
+
+button {
+    margin-top: 10px;
+    padding: 8px 18px;
+
+    background: #c8c0aa;
+    color: white;
+
+    border: 1px solid white;
+
+    font-family: monospace;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #b5aa91;
+}
+
+a {
+    color: white;
+}
+
+#message {
+    min-height: 20px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<h1>LIMINALITY ARCHIVE</h1>
+
+<p>ESCAPE RUN</p>
+
+<p>
+    SCORE:
+    <span id="score">0</span>
+    |
+    HIGH SCORE:
+    <span id="highScore">0</span>
+</p>
+
+
+<canvas
+    id="game"
+    width="800"
+    height="300">
+</canvas>
+
+
+<div id="message">
+    PRESS SPACE OR CLICK TO JUMP
+</div>
+
+
+<button onclick="restartGame()">
+    RESTART GAME
+</button>
+
+<br><br>
+
+<a href="Menu.html">
+    Back to Home
+</a>
+
+
+<script>
+
+
+// ==========================================
+// SETUP
+// ==========================================
+
+const canvas =
+    document.getElementById("game");
+
+const ctx =
+    canvas.getContext("2d");
+
+const scoreText =
+    document.getElementById("score");
+
+const highScoreText =
+    document.getElementById("highScore");
+
+const message =
+    document.getElementById("message");
+
+
+// ==========================================
+// GAME VARIABLES
+// ==========================================
+
+let player;
+
+let obstacles = [];
+
+let score = 0;
+
+let highScore = 0;
+
+let gameRunning = true;
+
+let gameSpeed = 5;
+
+let spawnTimer = 0;
+
+let lastTime = performance.now();
+
+
+// ==========================================
+// PLAYER
+// ==========================================
+
+function createPlayer() {
+
+    return {
+
+        x: 100,
+
+        y: 220,
+
+        width: 30,
+
+        height: 40,
+
+        velocityY: 0,
+
+        gravity: 0.8,
+
+        jumpPower: -14,
+
+        grounded: true
+
+    };
+
+}
+
+
+// ==========================================
+// RESTART
+// ==========================================
+
+function restartGame() {
+
+    player =
+        createPlayer();
+
+    obstacles = [];
+
+    score = 0;
+
+    gameSpeed = 5;
+
+    spawnTimer = 0;
+
+    gameRunning = true;
+
+    message.textContent =
+        "PRESS SPACE OR CLICK TO JUMP";
+
+    updateScore();
+
+}
+
+
+// ==========================================
+// JUMP
+// ==========================================
+
+function jump() {
+
+    if (!gameRunning) {
+
+        restartGame();
+
+        return;
+
+    }
+
+
+    if (player.grounded) {
+
+        player.velocityY =
+            player.jumpPower;
+
+        player.grounded = false;
+
+    }
+
+}
+
+
+// ==========================================
+// KEYBOARD
+// ==========================================
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.code === "Space" ||
+            event.code === "ArrowUp" ||
+            event.key.toLowerCase() === "w"
+        ) {
+
+            event.preventDefault();
+
+            jump();
+
+        }
+
+    }
+);
+
+
+// ==========================================
+// MOUSE / TOUCH
+// ==========================================
+
+canvas.addEventListener(
+    "mousedown",
+    jump
+);
+
+canvas.addEventListener(
+    "touchstart",
+    function(event) {
+
+        event.preventDefault();
+
+        jump();
+
+    }
+);
+
+
+// ==========================================
+// CREATE OBSTACLE
+// ==========================================
+
+function spawnObstacle() {
+
+    let type =
+        Math.floor(Math.random() * 3);
+
+    let obstacle;
+
+
+    // SMALL BLOCK
+
+    if (type === 0) {
+
+        obstacle = {
+
+            x: canvas.width,
+
+            y: 240,
+
+            width: 30,
+
+            height: 30
+
+        };
+
+    }
+
+
+    // TALL BLOCK
+
+    else if (type === 1) {
+
+        obstacle = {
+
+            x: canvas.width,
+
+            y: 210,
+
+            width: 35,
+
+            height: 60
+
+        };
+
+    }
+
+
+    // LONG BLOCK
+
+    else {
+
+        obstacle = {
+
+            x: canvas.width,
+
+            y: 250,
+
+            width: 60,
+
+            height: 20
+
+        };
+
+    }
+
+
+    obstacles.push(obstacle);
+
+}
+
+
+// ==========================================
+// UPDATE PLAYER
+// ==========================================
+
+function updatePlayer() {
+
+    player.velocityY +=
+        player.gravity;
+
+    player.y +=
+        player.velocityY;
+
+
+    const ground =
+        260 - player.height;
+
+
+    if (player.y >= ground) {
+
+        player.y = ground;
+
+        player.velocityY = 0;
+
+        player.grounded = true;
+
+    }
+
+}
+
+
+// ==========================================
+// UPDATE OBSTACLES
+// ==========================================
+
+function updateObstacles() {
+
+    for (
+        let i = obstacles.length - 1;
+        i >= 0;
+        i--
+    ) {
+
+        obstacles[i].x -=
+            gameSpeed;
+
+
+        if (
+            obstacles[i].x +
+            obstacles[i].width < 0
+        ) {
+
+            obstacles.splice(i, 1);
+
+        }
+
+    }
+
+}
+
+
+// ==========================================
+// COLLISION
+// ==========================================
+
+function checkCollision(a, b) {
+
+    return (
+
+        a.x < b.x + b.width &&
+
+        a.x + a.width > b.x &&
+
+        a.y < b.y + b.height &&
+
+        a.y + a.height > b.y
+
+    );
+
+}
+
+
+function checkCollisions() {
+
+    for (let obstacle of obstacles) {
+
+        if (
+            checkCollision(
+                player,
+                obstacle
+            )
+        ) {
+
+            gameOver();
+
+        }
+
+    }
+
+}
+
+
+// ==========================================
+// SCORE
+// ==========================================
+
+function updateScore() {
+
+    scoreText.textContent =
+        Math.floor(score);
+
+    highScoreText.textContent =
+        Math.floor(highScore);
+
+}
+
+
+// ==========================================
+// GAME OVER
+// ==========================================
+
+function gameOver() {
+
+    gameRunning = false;
+
+    if (score > highScore) {
+
+        highScore = score;
+
+    }
+
+    updateScore();
+
+    message.textContent =
+        "YOU HIT AN OBSTACLE. PRESS SPACE TO TRY AGAIN.";
+
+}
+
+
+// ==========================================
+// DRAW
+// ==========================================
+
+function draw() {
+
+    // Background
+
+    ctx.fillStyle =
+        "#c8c0aa";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    // Background lines
+
+    ctx.strokeStyle =
+        "#b5aa91";
+
+    ctx.lineWidth = 1;
+
+
+    for (
+        let x = 0;
+        x < canvas.width;
+        x += 40
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(x, 0);
+
+        ctx.lineTo(
+            x,
+            canvas.height
+        );
+
+        ctx.stroke();
+
+    }
+
+
+    // Ground
+
+    ctx.strokeStyle =
+        "#ffffff";
+
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        260
+    );
+
+    ctx.lineTo(
+        canvas.width,
+        260
+    );
+
+    ctx.stroke();
+
+
+    // Player
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.fillRect(
+        player.x,
+        player.y,
+        player.width,
+        player.height
+    );
+
+
+    // Player eye
+
+    ctx.fillStyle =
+        "#c8c0aa";
+
+    ctx.fillRect(
+        player.x + 20,
+        player.y + 8,
+        5,
+        5
+    );
+
+
+    // Obstacles
+
+    for (let obstacle of obstacles) {
+
+        ctx.fillStyle =
+            "#ffffff";
+
+        ctx.fillRect(
+            obstacle.x,
+            obstacle.y,
+            obstacle.width,
+            obstacle.height
+        );
+
+    }
+
+
+    // Small archive-style text
+
+    ctx.fillStyle =
+        "#ffffff";
+
+    ctx.font =
+        "14px monospace";
+
+    ctx.fillText(
+        "RUNNING...",
+        20,
+        25
+    );
+
+}
+
+
+// ==========================================
+// MAIN GAME LOOP
+// ==========================================
+
+function gameLoop(currentTime) {
+
+    const delta =
+        (currentTime - lastTime) / 1000;
+
+    lastTime =
+        currentTime;
+
+
+    if (gameRunning) {
+
+        score +=
+            delta * 10;
+
+
+        // Slowly increase difficulty
+
+        gameSpeed =
+            5 + score / 250;
+
+
+        spawnTimer += delta;
+
+
+        // Obstacles become slightly
+        // more frequent over time
+
+        const spawnDelay =
+            Math.max(
+                0.9,
+                1.8 - score / 500
+            );
+
+
+        if (
+            spawnTimer >= spawnDelay
+        ) {
+
+            spawnObstacle();
+
+            spawnTimer = 0;
+
+        }
+
+
+        updatePlayer();
+
+        updateObstacles();
+
+        checkCollisions();
+
+        updateScore();
+
+    }
+
+
+    draw();
+
+
+    requestAnimationFrame(
+        gameLoop
+    );
+
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+restartGame();
+
+requestAnimationFrame(
+    gameLoop
+);
+
+</script>
+
+</body>
+
+</html>
