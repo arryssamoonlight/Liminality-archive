@@ -1,8 +1,10 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
     <title>Entities - Liminality Archive</title>
+
 <style>
 a:link {
     color: #ffffff;
@@ -11,14 +13,33 @@ a:link {
 a:visited {
     color: #ffffff;
 }
+
+#searchBar {
+    font-family: monospace;
+    font-size: 16px;
+    padding: 8px;
+    width: 250px;
+    border: 1px solid #ffffff;
+    background-color: #d4d0c5;
+    color: #302f29;
+}
+
+#searchBar::placeholder {
+    color: #555555;
+}
 </style>
+
 </head>
 
 <body style="background-color: #c8c0aa; color: #ffffff; font-family: monospace;">
 
+<h1>Entities</h1>
 
-    <h1>Entities</h1>
-<p>
+<input type="text" id="searchBar" placeholder="Search entities...">
+
+<br><br>
+
+<div class="entity">
 <h2>Wranglers</h2>
 <h3>Entity Class:</h3> Class 1<br><br>
 
@@ -27,12 +48,18 @@ They attack travelers by grabbing and restraining them, attempting to strangle t
 Their main weakness is the string around their face. Pulling or grabbing that string can kill them.
 Once a Wrangler is dead, its body can serve as a food source.<br><br>
 
-<h2>Spindels<h2/>
+</div>
+
+<div class="entity">
+<h2>Spindels</h2>
 <h3>Entity Class:</h3> Class 2<br><br>
 
 Spindels are horrifying spider-like creatures with animal-like arms that are definitely not spider legs. They will attempt to grab travelers and throw them, but their grip strength is relatively weak.
 They can also bite travelers, and their bites release poison into the victim's body. This poisonous bite is the main reason Spindels are classified as Class 2.<br><br>
 
+</div>
+
+<div class="entity">
 <h2>Drowners</h2>
 <h3>Entity Class:</h3> Class 0<br><br>
 
@@ -40,17 +67,62 @@ Small, pale creatures that resemble people wearing soaked clothing, but their fa
 They don't normally attack travelers. They simply stand in the water and stare toward the nearest window.
 If approached, they slowly walk away.
 If a traveler follows them for too long, however, they will eventually lead the traveler into a deeper section of the level and disappear.<br><br>
-  
-<h2>Shapeshifters</h2> 
+
+</div>
+
+<div class="entity">
+<h2>Shapeshifters</h2>
 <h3>Entity Class:</h3> Class 2<br><br>
 
 Shapeshifters can take the form of something a traveler desires most. Their appearances are often connected to the pink environment of the level and may resemble someone or something emotionally important to the traveler. When approached, the Shapeshifter eventually reveals its true form: a slender black body with a pink heart-shaped head. It attempts to restrain travelers in a prolonged embrace. If the traveler cannot escape, the restraint eventually becomes fatal. However, if a traveler manages to free their hands and strikes the entity once or twice, it will disappear.<br><br>
 
-<h2>Tripwire Goblins</h2>
-<h3>Entity Class:</h3> Class 4<br><br> 
-Tripwire Goblins are extremely thin entities that resemble living tripwires. Their thin bodies make them extremely difficult to notice. If a traveler trips over one, it releases a toxic gas that can be rapidly fatal<br><br>
+</div>
 
-  <a href="menu.html" style="color: #ffffff;">Back to Home</a>
+<div class="entity">
+<h2>Tripwire Goblins</h2>
+<h3>Entity Class:</h3> Class 4<br><br>
+
+Tripwire Goblins are extremely thin entities that resemble living tripwires. Their thin bodies make them extremely difficult to notice. If a traveler trips over one, it releases a toxic gas that can be rapidly fatal.<br><br>
+
+</div>
+
+<div class="entity">
+<h2>Walking Trees</h2>
+<h3>Entity Class:</h3> Class 2<br><br>
+
+Walking Trees are entities that resemble ordinary trees. They are deaf but are able to see normally. They can grow or perch anywhere where there is actual dirt. Once a Walking Tree sees a human, it will attempt to ram into them. Other than this behavior, Walking Trees do not appear to have any other unusual abilities.<br><br>
+
+</div>
+
+<div class="entity">
+<h2>Walking Houses</h2>
+<h3>Entity Class:</h3> Class 4<br><br>
+
+Walking Houses are entities that normally resemble ordinary suburban houses. They can suddenly stand up on tall, needle-like black legs and walk through the neighborhood. Walking Houses are blind, but their hearing is approximately 70 times stronger than that of a human. They hunt by sound, making it important for travelers to minimize noise around them. Their doors function as mouths. Walking Houses are extremely heavy and cannot run or jump, but they can walk and perch in unusual locations, including roads, trees, and even other houses. Walking Houses are significantly larger than Walking Trees and will generally win when the two entities fight.<br><br>
+
+</div>
+
+<a href="menu.html" style="color: #ffffff;">Back to Home</a>
+
+<script>
+const searchBar = document.getElementById("searchBar");
+const entities = document.querySelectorAll(".entity");
+
+searchBar.addEventListener("input", function() {
+    const searchText = searchBar.value.toLowerCase();
+
+    entities.forEach(function(entity) {
+        const entityText = entity.textContent.toLowerCase();
+
+        if (entityText.includes(searchText)) {
+            entity.style.display = "";
+        } else {
+            entity.style.display = "none";
+        }
+    });
+});
+</script>
+
 </body>
 
 </html>

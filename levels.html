@@ -1,24 +1,98 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
     <title>Levels - Liminality Archive</title>
+
+```
+<style>
+    #searchBar {
+        font-family: monospace;
+        font-size: 16px;
+        padding: 8px;
+        width: 250px;
+        border: 1px solid #403d39;
+        background-color: #ffffff;
+        color: #302f29;
+    }
+
+    #searchBar::placeholder {
+        color: #555555;
+    }
+
+    .level {
+        display: block;
+    }
+</style>
+```
+
 </head>
 
 <body style="background-color: #c8c0aa; color: #ffffff; font-family: monospace;">
 
+```
+<h1>Levels</h1>
 
-    <h1>Levels</h1>
-<a href="level0.html" style="color: #403d39;">Level 0 - A beggining</a><br>
-<a href="level1.html" style="color: #71c8eb;">Level 1 - The Drowned Halls</a><br>
-<a href="level2.html" style="color: #653b66;">Level 2 - Pink Reverie</a><br>
-<a href="level3.html" style="color: #d5e6e0;">Level 3 - The Overgrown Atrium</a><br>
-<a href="level4.html" style="color: #fbc4ff;">Level 4 - The Open Field </a><br>
-<a href="level5.html" style="color: #fff34a;">Level 5 - Trains Galore and Beyond </a><br>
-<a href="level6.html" style="color: #ff3640;">Level 6 - Rottingdine  </a><br>
+<input type="text" id="searchBar" placeholder="Search levels...">
 
+<br><br>
 
-   <a href="menu.html" style="color: #ffffff;">Back to Home</a>
+<div class="level" data-level="0">
+    <a href="level0.html" style="color: #403d39;">Level 0 - A Beginning</a>
+</div>
+
+<div class="level" data-level="1">
+    <a href="level1.html" style="color: #71c8eb;">Level 1 - The Drowned Halls</a>
+</div>
+
+<div class="level" data-level="2">
+    <a href="level2.html" style="color: #653b66;">Level 2 - Pink Reverie</a>
+</div>
+
+<div class="level" data-level="3">
+    <a href="level3.html" style="color: #d5e6e0;">Level 3 - The Overgrown Atrium</a>
+</div>
+
+<div class="level" data-level="4">
+    <a href="level4.html" style="color: #fbc4ff;">Level 4 - The Open Field</a>
+</div>
+
+<div class="level" data-level="5">
+    <a href="level5.html" style="color: #fff34a;">Level 5 - Trains Galore and Beyond</a>
+</div>
+
+<div class="level" data-level="6">
+    <a href="level6.html" style="color: #ff3640;">Level 6 - Rottingdine</a>
+</div>
+
+<br>
+
+<a href="menu.html" style="color: #ffffff;">Back to Home</a>
+
+<script>
+    const searchBar = document.getElementById("searchBar");
+    const levels = document.querySelectorAll(".level");
+
+    searchBar.addEventListener("input", function() {
+        const searchText = searchBar.value.toLowerCase().trim();
+
+        levels.forEach(function(level) {
+            const levelNumber = level.getAttribute("data-level");
+            const levelText = level.textContent.toLowerCase();
+
+            if (
+                searchText === "" ||
+                (searchText.match(/^\d+$/) && levelNumber === searchText) ||
+                (!searchText.match(/^\d+$/) && levelText.includes(searchText))
+            ) {
+                level.style.display = "block";
+            } else {
+                level.style.display = "none";
+            }
+        });
+    });
+</script>
 
 </body>
 
